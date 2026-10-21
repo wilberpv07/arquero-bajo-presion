@@ -1,8 +1,419 @@
-const qrImg = document.getElementById('qrCodeImg');
-      if (qrImg) {
-        let currentUrl = window.location.href;
-        if (!currentUrl || currentUrl.startsWith('about:') || currentUrl.startsWith('file:') || currentUrl.includes('null')) {
-          currentUrl = 'https://juanjosepulido.github.io/arquero-bajo-presion'; 
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arquero Bajo Presión - Psicología de Alto Rendimiento</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,800;1,400&family=Teko:wght@600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['Teko', 'sans-serif'],
+          },
+          colors: {
+            pitch: {
+              900: '#070c14',
+              800: '#0f172a',
+              700: '#1e293b',
+              accent: '#34d399',
+              neon: '#10b981',
+              gold: '#fbbf24',
+              red: '#ef4444'
+            }
+          }
         }
-        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(currentUrl)}&color=10b981&bgcolor=070c14`;
       }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #070c14; }
+    ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 4px; }
+
+    @keyframes breatheBox {
+      0%, 100% { transform: scale(0.88); border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+      25% { transform: scale(1.1); border-color: #10b981; box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
+      50% { transform: scale(1.1); border-color: #fbbf24; box-shadow: 0 0 30px rgba(251, 191, 36, 0.6); }
+      75% { transform: scale(0.88); border-color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+    }
+
+    .breathe-animation { animation: breatheBox 16s infinite ease-in-out; }
+    .backdrop-blur-md { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  </style>
+</head>
+<body class="bg-pitch-900 text-slate-100 font-sans min-h-screen min-h-[100dvh] flex flex-col justify-between overflow-x-hidden selection:bg-pitch-neon selection:text-slate-900">
+
+  <header class="sticky top-0 z-50 bg-pitch-900/95 backdrop-blur-md border-b border-pitch-700/50 px-4 lg:px-8 py-3 shrink-0">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-pitch-neon/20 border border-pitch-neon/40 flex items-center justify-center text-pitch-neon text-xl shadow-lg">
+          <i class="fa-solid fa-hands-holding"></i>
+        </div>
+        <div>
+          <h1 class="font-display text-2xl tracking-wider text-white uppercase leading-none font-bold">ARQUERO BAJO PRESIÓN</h1>
+          <p class="text-[11px] text-pitch-accent font-medium">Psicología de Alto Rendimiento Deportivo</p>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center space-x-1 bg-pitch-800/90 p-1.5 rounded-2xl border border-pitch-700/60">
+        <button onclick="goToSlide(0)" class="nav-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 bg-pitch-neon text-slate-950 shadow-md" data-index="0"><i class="fa-solid fa-house"></i><span>Portada</span></button>
+        <button onclick="goToSlide(1)" class="nav-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-pitch-700/50 transition-all flex items-center space-x-1.5" data-index="1"><i class="fa-solid fa-bolt"></i><span>Desafío</span></button>
+        <button onclick="goToSlide(2)" class="nav-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-pitch-700/50 transition-all flex items-center space-x-1.5" data-index="2"><i class="fa-solid fa-bullseye"></i><span>Objetivo</span></button>
+        <button onclick="goToSlide(3)" class="nav-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-pitch-700/50 transition-all flex items-center space-x-1.5" data-index="3"><i class="fa-solid fa-brain"></i><span>Técnicas</span></button>
+        <button onclick="goToSlide(4)" class="nav-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-pitch-700/50 transition-all flex items-center space-x-1.5" data-index="4"><i class="fa-solid fa-list-check"></i><span>Fases</span></button>
+        <button onclick="goToSlide(5)" class="nav-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-pitch-700/50 transition-all flex items-center space-x-1.5" data-index="5"><i class="fa-solid fa-vial"></i><span>Prueba</span></button>
+        <button onclick="goToSlide(6)" class="nav-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-pitch-700/50 transition-all flex items-center space-x-1.5" data-index="6"><i class="fa-solid fa-chart-line"></i><span>Resultados</span></button>
+      </nav>
+
+      <div class="flex items-center space-x-2">
+        <button id="stadiumAtmosphereBtn" onclick="toggleStadiumAmbience()" class="px-3.5 py-2 rounded-xl bg-pitch-800 hover:bg-pitch-700 border border-pitch-700 text-xs font-bold text-slate-200 flex items-center space-x-2 transition-all">
+          <i id="stadiumIcon" class="fa-solid fa-users-rays text-pitch-gold"></i>
+          <span id="stadiumBtnText" class="hidden sm:inline">Ambiente Estadio</span>
+        </button>
+        <button id="musicBtn" onclick="toggleBackgroundMusic()" class="px-3 py-2 rounded-xl bg-pitch-800 hover:bg-pitch-700 border border-pitch-700 text-xs font-bold text-slate-200 flex items-center space-x-1 transition-all">
+          <i id="musicIcon" class="fa-solid fa-music text-pitch-neon"></i>
+          <span id="musicBtnText" class="hidden sm:inline">Música</span>
+        </button>
+        <button onclick="playWhistleSound()" class="px-3 py-2 rounded-xl bg-pitch-800 hover:bg-pitch-700 border border-pitch-700 text-xs font-bold text-slate-200 flex items-center space-x-1 transition-all" title="Silbato">
+          <i class="fa-solid fa-bullhorn text-pitch-accent"></i>
+        </button>
+        <button onclick="playHeartbeatSound()" class="px-3 py-2 rounded-xl bg-pitch-800 hover:bg-pitch-700 border border-pitch-700 text-xs font-bold text-slate-200 flex items-center space-x-1 transition-all" title="Latido">
+          <i class="fa-solid fa-heart-pulse text-pitch-red"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 lg:px-8 py-6 flex-grow flex items-center justify-center w-full">
+    
+    <!-- SLIDE 0: PORTADA -->
+    <section id="slide-0" class="slide-content w-full space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <div class="lg:col-span-7 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-pitch-neon/10 border border-pitch-neon/30 text-pitch-accent text-xs font-bold uppercase tracking-wider">
+              <i class="fa-solid fa-shield"></i>
+              <span>ENTRENAMIENTO MENTAL EN LA PORTERÍA</span>
+            </div>
+            <h1 class="font-display text-6xl sm:text-7xl lg:text-8xl font-extrabold uppercase leading-none tracking-tight text-white">
+              ARQUERO BAJO <br>
+              <span class="text-pitch-neon bg-gradient-to-r from-pitch-neon to-emerald-400 bg-clip-text text-transparent">PRESIÓN</span>
+            </h1>
+            <p class="text-lg md:text-xl font-light italic text-slate-300 border-l-2 border-pitch-neon pl-4 py-1">
+              "La mente también ataja. Regulando la ansiedad desde los doce pasos."
+            </p>
+          </div>
+
+          <div class="bg-pitch-800/80 rounded-2xl p-4 border border-pitch-700/80 space-y-3">
+            <div class="flex justify-between items-center text-xs font-bold">
+              <span class="text-slate-400 flex items-center gap-1.5 uppercase tracking-wider">
+                <i class="fa-solid fa-heart-pulse text-pitch-red"></i> FRECUENCIA CARDÍACA SIMULADA
+              </span>
+              <span id="bpmDisplay" class="text-pitch-red font-mono font-extrabold text-sm">145 BPM (Alta Presión)</span>
+            </div>
+            <div class="w-full bg-pitch-900 rounded-full h-2.5 overflow-hidden border border-pitch-700">
+              <div id="bpmProgressBar" class="bg-gradient-to-r from-emerald-400 via-amber-400 to-red-500 h-full transition-all duration-500" style="width: 75%;"></div>
+            </div>
+            <div class="flex space-x-2 pt-1">
+              <button onclick="setBPM(72, 'Baja Presión', '20%', 'text-emerald-400')" class="px-3 py-1.5 rounded-lg bg-pitch-900 hover:bg-pitch-700 border border-pitch-700 text-xs font-semibold text-slate-300 transition">Baja Presión</button>
+              <button onclick="setBPM(110, 'Media Presión', '50%', 'text-amber-400')" class="px-3 py-1.5 rounded-lg bg-pitch-900 hover:bg-pitch-700 border border-pitch-700 text-xs font-semibold text-slate-300 transition">Media Presión</button>
+              <button onclick="setBPM(165, 'Penalti Decisivo', '92%', 'text-pitch-red')" class="px-3 py-1.5 rounded-lg bg-pitch-900 hover:bg-pitch-700 border border-pitch-700 text-xs font-semibold text-slate-300 transition">Penalti Decisivo</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="bg-pitch-800/70 p-3.5 rounded-2xl border border-pitch-700/60">
+              <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">INVESTIGADOR</p>
+              <p class="text-white font-extrabold text-sm mt-0.5">Juan Jose Pulido</p>
+            </div>
+            <div class="bg-pitch-800/70 p-3.5 rounded-2xl border border-pitch-700/60">
+              <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">MATERIA / COLEGIO</p>
+              <p class="text-white font-extrabold text-sm mt-0.5">Proyecto Personal - Gimnasio el Hontanar 9E</p>
+            </div>
+            <div class="bg-pitch-800/70 p-3.5 rounded-2xl border border-pitch-700/60">
+              <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">DISCIPLINA</p>
+              <p class="text-white font-extrabold text-sm mt-0.5">Psicología del Deporte</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 relative rounded-3xl overflow-hidden border border-pitch-neon/30 min-h-[380px] shadow-2xl flex flex-col justify-between p-6 bg-slate-900">
+          <img src="https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1000&q=80" alt="Arquero" class="absolute inset-0 w-full h-full object-cover opacity-90">
+          <div class="absolute inset-0 bg-gradient-to-t from-pitch-900 via-pitch-900/40 to-pitch-900/20"></div>
+
+          <div class="relative z-10 self-end bg-pitch-900/85 backdrop-blur-md p-2.5 rounded-2xl border border-pitch-neon/40 shadow-xl flex items-center space-x-3 max-w-[220px]">
+            <img id="qrCodeImg" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://wilberpv07.github.io/arquero-bajo-presion/&color=10b981&bgcolor=070c14" alt="QR" class="w-14 h-14 rounded-lg border border-pitch-700 p-0.5 bg-pitch-900 shrink-0">
+            <div class="text-left">
+              <span class="text-[10px] font-extrabold text-pitch-neon uppercase tracking-wider block">Ver en Móvil</span>
+              <p class="text-[10px] text-slate-300 leading-tight mt-0.5">Escanea para abrir la presentación</p>
+            </div>
+          </div>
+
+          <div class="relative z-10 bg-pitch-900/85 backdrop-blur-md p-4 rounded-2xl border border-pitch-700 space-y-1 mt-auto">
+            <span class="px-2.5 py-0.5 rounded-full bg-pitch-neon text-slate-950 font-black text-[10px] uppercase tracking-wider">ENFOCADO</span>
+            <h3 class="text-lg font-bold text-white mt-1">Visión de Juegos Complejos</h3>
+            <p class="text-xs text-slate-300">El momento exacto donde la respiración determina el éxito de la atajada.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 1: DESAFÍO -->
+    <section id="slide-1" class="slide-content w-full hidden space-y-8">
+      <div class="text-center max-w-3xl mx-auto space-y-2">
+        <span class="text-pitch-accent text-xs font-bold tracking-widest uppercase flex items-center justify-center gap-1.5"><i class="fa-solid fa-earth-americas"></i> CONTEXTO CRÍTICO</span>
+        <h2 class="font-display text-5xl lg:text-6xl font-black text-white uppercase tracking-tight leading-none">EL DESAFÍO MENTAL DESDE LOS DOCE PASOS</h2>
+        <p class="text-sm text-slate-300">En el fútbol profesional y juvenil, un penal sitúa al portero en una desventaja matemática y psicológica extrema.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-pitch-800/80 rounded-3xl p-6 border border-pitch-700/60 space-y-4">
+          <div class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-pitch-red text-lg"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <h3 class="text-xl font-bold text-white">Estrés de Alta Exigencia</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Decisiones en <strong class="text-pitch-red">menos de 400 milisegundos</strong>.</p>
+        </div>
+        <div class="bg-pitch-800/80 rounded-3xl p-6 border border-pitch-700/60 space-y-4">
+          <div class="w-10 h-10 rounded-xl bg-pitch-700/50 border border-pitch-700 flex items-center justify-center text-slate-400 text-lg"><i class="fa-solid fa-brain"></i></div>
+          <h3 class="text-xl font-bold text-white">Bloqueo Cognitivo</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">La ansiedad produce <strong class="text-pitch-gold">visión de túnel</strong> y rigidez muscular.</p>
+        </div>
+        <div class="bg-pitch-800/80 rounded-3xl p-6 border border-pitch-700/60 space-y-4">
+          <div class="w-10 h-10 rounded-xl bg-pitch-neon/10 border border-pitch-neon/30 flex items-center justify-center text-pitch-neon text-lg"><i class="fa-solid fa-shield-halved"></i></div>
+          <h3 class="text-xl font-bold text-white">Regulación Emocional</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Metodologías psicofisiológicas para reprogramar el foco de atención.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: OBJETIVO -->
+    <section id="slide-2" class="slide-content w-full hidden space-y-6">
+      <div class="text-center max-w-2xl mx-auto">
+        <span class="text-pitch-accent text-xs font-bold tracking-widest uppercase"><i class="fa-solid fa-bullseye mr-1"></i> Meta Principal</span>
+        <h2 class="font-display text-5xl lg:text-6xl font-black text-white uppercase">Objetivo General</h2>
+      </div>
+      <div class="bg-pitch-800/90 rounded-3xl p-8 border border-pitch-neon/30 text-center max-w-3xl mx-auto space-y-4 shadow-xl">
+        <p class="text-base md:text-xl font-medium text-slate-200 leading-relaxed">
+          Comprender y aplicar técnicas de regulación emocional (respiración diafragmática, en caja y visualización) para analizar su impacto directo sobre los niveles de <strong class="text-pitch-gold">ansiedad competitiva</strong> y la <strong class="text-pitch-neon">efectividad en el número de atajadas</strong> en arqueros juveniles de 15 a 16 años.
+        </p>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: TÉCNICAS -->
+    <section id="slide-3" class="slide-content w-full hidden space-y-6">
+      <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+        <div>
+          <span class="text-pitch-accent text-xs font-bold tracking-widest uppercase"><i class="fa-solid fa-toolbox mr-1"></i> Herramientas</span>
+          <h2 class="font-display text-4xl lg:text-5xl font-black text-white uppercase">Técnicas de Control Emocional</h2>
+        </div>
+        <div class="flex bg-pitch-800 p-1 rounded-xl border border-pitch-700">
+          <button onclick="switchTechniqueTab('box')" id="tab-box" class="tech-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-pitch-neon text-slate-950">Caja</button>
+          <button onclick="switchTechniqueTab('dia')" id="tab-dia" class="tech-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white">Diafragmática</button>
+          <button onclick="switchTechniqueTab('vis')" id="tab-vis" class="tech-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white">Visualización</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <div class="lg:col-span-5 bg-pitch-800/90 rounded-3xl p-6 border border-pitch-700/80 flex flex-col items-center justify-center text-center relative overflow-hidden min-h-[320px]">
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Simulador (4x4)</h4>
+          <div id="boxBreathCircle" class="w-36 h-36 rounded-3xl border-4 border-pitch-neon flex items-center justify-center breathe-animation relative shadow-2xl">
+            <div id="breathPhaseText" class="text-xl font-black text-white uppercase tracking-wider">Inhala</div>
+          </div>
+          <p id="breathCounter" class="mt-4 text-xs font-mono text-pitch-neon font-bold">Fase: 4 Segundos</p>
+        </div>
+        <div class="lg:col-span-7 space-y-4">
+          <div id="tech-card-box" class="tech-card bg-pitch-800/60 border border-pitch-700/50 rounded-2xl p-5 space-y-3">
+            <h3 class="text-xl font-bold text-white">Respiración en Caja (Box Breathing)</h3>
+            <p class="text-xs md:text-sm text-slate-300">4 etapas de 4 segundos: Inhalar, Retener, Exhalar, Pausa.</p>
+          </div>
+          <div id="tech-card-dia" class="tech-card bg-pitch-800/60 border border-pitch-700/50 rounded-2xl p-5 space-y-3 hidden">
+            <h3 class="text-xl font-bold text-white">Respiración Diafragmática</h3>
+            <p class="text-xs md:text-sm text-slate-300">Expansión del abdomen para estimular el Nervio Vago.</p>
+          </div>
+          <div id="tech-card-vis" class="tech-card bg-pitch-800/60 border border-pitch-700/50 rounded-2xl p-5 space-y-3 hidden">
+            <h3 class="text-xl font-bold text-white">Visualización Guiada</h3>
+            <p class="text-xs md:text-sm text-slate-300">Proyección mental del vuelo exitoso hacia el balón.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: FASES -->
+    <section id="slide-4" class="slide-content w-full hidden space-y-6">
+      <div class="text-center max-w-2xl mx-auto">
+        <span class="text-pitch-accent text-xs font-bold tracking-widest uppercase"><i class="fa-solid fa-diagram-project mr-1"></i> Metodología</span>
+        <h2 class="font-display text-4xl lg:text-5xl font-black text-white uppercase">Fases del Programa</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-pitch-800/80 rounded-2xl p-6 border border-pitch-700/60"><span class="text-red-400 font-bold text-xs uppercase">Fase 1</span><h3 class="text-lg font-bold text-white mt-2">Medición Inicial</h3><p class="text-xs text-slate-300 mt-1">Registrar ansiedad y atajadas sin técnica.</p></div>
+        <div class="bg-pitch-800/80 rounded-2xl p-6 border border-pitch-700/60"><span class="text-amber-400 font-bold text-xs uppercase">Fase 2</span><h3 class="text-lg font-bold text-white mt-2">Entrenamiento</h3><p class="text-xs text-slate-300 mt-1">Aplicar técnicas de respiración.</p></div>
+        <div class="bg-pitch-800/80 rounded-2xl p-6 border border-pitch-700/60"><span class="text-pitch-neon font-bold text-xs uppercase">Fase 3</span><h3 class="text-lg font-bold text-white mt-2">Medición Final</h3><p class="text-xs text-slate-300 mt-1">Comparar resultados y cambios.</p></div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: PRUEBA -->
+    <section id="slide-5" class="slide-content w-full hidden space-y-6">
+      <div class="text-center max-w-2xl mx-auto">
+        <span class="text-pitch-accent text-xs font-bold tracking-widest uppercase"><i class="fa-solid fa-users-viewfinder mr-1"></i> Diseño</span>
+        <h2 class="font-display text-4xl lg:text-5xl font-black text-white uppercase">Participantes y Prueba</h2>
+      </div>
+      <div class="bg-pitch-800/90 rounded-2xl p-6 border border-pitch-700/80 text-center max-w-2xl mx-auto space-y-3">
+        <p class="text-sm text-slate-300">Evaluación de <strong>10 arqueros</strong> juveniles mediante 10 penaltis cada uno (5 sin técnica y 5 aplicando respiración).</p>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: RESULTADOS -->
+    <section id="slide-6" class="slide-content w-full hidden space-y-6">
+      <div class="text-center max-w-2xl mx-auto">
+        <span class="text-pitch-accent text-xs font-bold tracking-widest uppercase"><i class="fa-solid fa-chart-column mr-1"></i> Evidencia</span>
+        <h2 class="font-display text-4xl lg:text-5xl font-black text-white uppercase">Resultados</h2>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-pitch-800/90 rounded-2xl p-5 border border-pitch-700/80">
+          <h3 class="text-sm font-bold text-pitch-neon uppercase mb-3">Atajadas Exitosas</h3>
+          <p class="text-xs text-slate-300">Aumento del <strong>34% al 50%</strong> en efectividad general con la técnica.</p>
+        </div>
+        <div class="bg-pitch-800/90 rounded-2xl p-5 border border-pitch-700/80">
+          <h3 class="text-sm font-bold text-amber-400 uppercase mb-3">Ansiedad Promedio</h3>
+          <p class="text-xs text-slate-300">Reducción de <strong>7,4 a 5,6 / 10</strong> en la escala de ansiedad.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-pitch-900/95 border-t border-pitch-700/50 px-4 lg:px-8 py-3">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <button onclick="prevSlide()" class="p-2 rounded-xl bg-pitch-800 hover:bg-pitch-700 text-slate-200"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="flex space-x-1" id="slideDots"></div>
+        <button onclick="nextSlide()" class="p-2 rounded-xl bg-pitch-800 hover:bg-pitch-700 text-slate-200"><i class="fa-solid fa-chevron-right"></i></button>
+        <span id="slideIndicator" class="text-xs font-mono text-slate-400 font-bold ml-2">Diapositiva 1 / 7</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    let currentSlide = 0;
+    const totalSlides = 7;
+    const stadiumAudio = new Audio('https://cdn.pixabay.com/download/audio/2021/09/06/audio_9efdfd2243.mp3?filename=stadium-cheering-crowd-6828.mp3');
+    stadiumAudio.loop = true;
+    stadiumAudio.volume = 0.5;
+    let isAudioPlaying = false;
+
+    function toggleBackgroundMusic() {
+      if (isAudioPlaying) {
+        stadiumAudio.pause();
+        isAudioPlaying = false;
+      } else {
+        stadiumAudio.play().catch(() => {});
+        isAudioPlaying = true;
+      }
+    }
+
+    function showSlide(index) {
+      if (index < 0 || index >= totalSlides) return;
+      for (let i = 0; i < totalSlides; i++) {
+        document.getElementById(`slide-${i}`)?.classList.add('hidden');
+      }
+      document.getElementById(`slide-${index}`)?.classList.remove('hidden');
+      currentSlide = index;
+      document.getElementById('slideIndicator').innerText = `Diapositiva ${currentSlide + 1} / ${totalSlides}`;
+      
+      document.querySelectorAll('.nav-btn').forEach((btn, idx) => {
+        btn.className = idx === currentSlide 
+          ? 'nav-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-pitch-neon text-slate-950 shadow-md flex items-center space-x-1.5' 
+          : 'nav-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-pitch-700/50 flex items-center space-x-1.5';
+      });
+    }
+
+    function goToSlide(index) { showSlide(index); }
+    function nextSlide() { if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1); }
+    function prevSlide() { if (currentSlide > 0) showSlide(currentSlide - 1); }
+
+    function setBPM(bpm, text, width, colorClass) {
+      document.getElementById('bpmDisplay').innerText = `${bpm} BPM (${text})`;
+      document.getElementById('bpmDisplay').className = `font-mono font-extrabold text-sm ${colorClass}`;
+      document.getElementById('bpmProgressBar').style.width = width;
+    }
+
+    function switchTechniqueTab(tabKey) {
+      ['box', 'dia', 'vis'].forEach(t => {
+        document.getElementById(`tab-${t}`).className = t === tabKey ? 'tech-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-pitch-neon text-slate-950' : 'tech-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white';
+        if (t === tabKey) document.getElementById(`tech-card-${t}`).classList.remove('hidden');
+        else document.getElementById(`tech-card-${t}`).classList.add('hidden');
+      });
+    }
+
+    const breathPhases = [
+      { name: 'Inhala', color: 'text-pitch-neon', text: 'Inhala en 4 Segundos' },
+      { name: 'Mantén', color: 'text-pitch-gold', text: 'Sostén el Aire (4s)' },
+      { name: 'Exhala', color: 'text-sky-400', text: 'Exhala Suavemente (4s)' },
+      { name: 'Pausa', color: 'text-amber-400', text: 'Pausa Pulmonar (4s)' }
+    ];
+    let breathIndex = 0;
+    setInterval(() => {
+      breathIndex = (breathIndex + 1) % breathPhases.length;
+      const current = breathPhases[breathIndex];
+      const pText = document.getElementById('breathPhaseText');
+      const cText = document.getElementById('breathCounter');
+      if (pText) { pText.innerText = current.name; pText.className = `text-xl font-black uppercase tracking-wider ${current.color}`; }
+      if (cText) cText.innerText = `Fase: ${current.text}`;
+    }, 4000);
+
+    function playWhistleSound() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.setValueAtTime(2600, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(3200, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.4, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 0.4);
+    }
+
+    function playHeartbeatSound() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const now = ctx.currentTime;
+      [55, 45].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.setValueAtTime(freq, now + (i * 0.12));
+        gain.gain.setValueAtTime(0.7, now + (i * 0.12));
+        gain.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.12) + 0.18);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(now + (i * 0.12)); osc.stop(now + (i * 0.12) + 0.18);
+      });
+    }
+
+    function toggleStadiumAmbience() {
+      playWhistleSound();
+    }
+
+    window.onload = function() {
+      const dotsContainer = document.getElementById('slideDots');
+      if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < totalSlides; i++) {
+          const dot = document.createElement('button');
+          dot.className = i === 0 ? 'w-6 h-3 rounded-full bg-pitch-neon transition-all' : 'w-3 h-3 rounded-full bg-pitch-700 hover:bg-slate-400 transition-all';
+          dot.onclick = () => goToSlide(i);
+          dotsContainer.appendChild(dot);
+        }
+      }
+      showSlide(0);
+    };
+  </script>
+</body>
+</html>
